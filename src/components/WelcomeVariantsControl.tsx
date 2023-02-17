@@ -7,8 +7,34 @@ import swal from '@sweetalert/with-react';
 
 export const WelcomeVariantsControl: React.FC<{
   fencing?: boolean;
+  singleplayer?: boolean;
 }> = (props) => {
   const classes = useStyles();
+  const showSinglePlayerInfo = () => {
+    swal({
+      title: 'downforacross.com/single-player',
+      icon: 'info',
+      content: (
+        <div className="swal-text swal-text--no-margin">
+          <p>
+            Fencing is a variant of Down for a Cross where you solve a crossword alone.
+            <br />
+            <br />
+            This mode is recommended for spotty internet connections, like if you're on the subway.
+            <br />
+            <br />
+            <span style={{fontSize: '75%', color: 'gray'}}>
+              Join the&nbsp;
+              <a href="https://discord.gg/KjPHFw8" target="_blank" rel="noreferrer">
+                community Discord
+              </a>
+              &nbsp;for more discussion.
+            </span>
+          </p>
+        </div>
+      ),
+    });
+  };
   const showFencingInfo = () => {
     swal({
       title: 'downforacross.com/fencing',
@@ -58,6 +84,20 @@ export const WelcomeVariantsControl: React.FC<{
           </span>
         </Link>
         <span className="nav--info" onClick={showFencingInfo}>
+          <i className="fa fa-info-circle" />
+        </span>
+      </span>
+      <span>
+        <Link to="/single-player">
+          <span
+            className={clsx(classes.option, {
+              selected: !!props.singleplayer,
+            })}
+          >
+            Single Player
+          </span>
+        </Link>
+        <span className="nav--info" onClick={showSinglePlayerInfo}>
           <i className="fa fa-info-circle" />
         </span>
       </span>
