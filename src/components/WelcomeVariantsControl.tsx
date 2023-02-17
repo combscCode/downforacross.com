@@ -7,7 +7,7 @@ import swal from '@sweetalert/with-react';
 
 export const WelcomeVariantsControl: React.FC<{
   fencing?: boolean;
-  singleplayer?: boolean;
+  singlePlayer?: boolean;
 }> = (props) => {
   const classes = useStyles();
   const showSinglePlayerInfo = () => {
@@ -67,7 +67,7 @@ export const WelcomeVariantsControl: React.FC<{
       <Link to="/">
         <span
           className={clsx(classes.option, {
-            selected: !props.fencing,
+            selected: !(props.fencing || props.singlePlayer),
           })}
         >
           Normal
@@ -91,7 +91,7 @@ export const WelcomeVariantsControl: React.FC<{
         <Link to="/single-player">
           <span
             className={clsx(classes.option, {
-              selected: !!props.singleplayer,
+              selected: !!props.singlePlayer,
             })}
           >
             Single Player

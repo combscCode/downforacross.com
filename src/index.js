@@ -63,6 +63,9 @@ const Root = () => {
             <Route exact path="/fencing">
               <Welcome fencing />
             </Route>
+            <Route exact path="/single-player">
+              <Welcome singlePlayer />
+            </Route>
             <Route exact path="/stats" component={Stats} />
             <Route exact path="/game/:gid" component={Game} />
             <Route exact path="/embed/game/:gid" component={Game} />

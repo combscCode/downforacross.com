@@ -146,6 +146,7 @@ export default class Welcome extends Component {
     return (
       <PuzzleList
         fencing={this.props.fencing}
+        singlePlayer={this.props.singlePlayer}
         puzzles={puzzles}
         uploadedPuzzles={this.uploadedPuzzles}
         userHistory={userHistory}
@@ -362,7 +363,7 @@ export default class Welcome extends Component {
           {this.showingSidebar && (
             <Flex className="welcome--sidebar" column shrink={0} style={{justifyContent: 'space-between'}}>
               {this.renderFilters()}
-              <WelcomeVariantsControl fencing={this.props.fencing} />
+              <WelcomeVariantsControl fencing={this.props.fencing} singlePlayer={this.props.singlePlayer} />
               {!this.mobile && this.renderQuickUpload()}
             </Flex>
           )}
