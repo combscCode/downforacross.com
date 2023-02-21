@@ -1,7 +1,7 @@
 import {CircularProgress, makeStyles} from '@material-ui/core';
 import React, {useEffect, useState} from 'react';
 import {GameState} from '../../shared/fencingGameEvents/types/GameState';
-import {GameEventsHook} from './useGameEvents';
+import {GameEventsHook} from '../common/useGameEvents';
 import {PlayerActions} from './usePlayerActions';
 
 export const FencingCountdown: React.FC<{

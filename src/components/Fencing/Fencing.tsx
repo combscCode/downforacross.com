@@ -17,7 +17,7 @@ import {FencingScoreboard} from './FencingScoreboard';
 import {TEAM_IDS} from '../../shared/fencingGameEvents/constants';
 import {FencingToolbar} from './FencingToolbar';
 import nameGenerator from '../../lib/nameGenerator';
-import {useGameEvents, GameEventsHook} from './useGameEvents';
+import {useGameEvents, GameEventsHook} from '../common/useGameEvents';
 import {getStartingCursorPosition} from '../../shared/fencingGameEvents/eventDefs/create';
 import Nav from '../common/Nav';
 import Chat from '../Chat';
