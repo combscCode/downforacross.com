@@ -112,6 +112,7 @@ export default class HistoryWrapper {
         this.memoize(index);
       }
     });
+    // sidestep issue
     if (!!this.getSnapshotAtIndex(insertPoint).clock) {
       event.gameTimestamp = this.getSnapshotAtIndex(insertPoint).clock.trueTotalTime;
     }

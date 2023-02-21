@@ -25,6 +25,7 @@ import {getStartingCursorPosition} from '../../shared/fencingGameEvents/eventDef
 import Nav from '../common/Nav';
 import Chat from '../Chat';
 import {FencingCountdown} from '../Fencing/FencingCountdown';
+import Game from '../Game/Game';
 
 // TODO
 // Implement a pared down version of the normal game. No chat needed
@@ -172,17 +173,24 @@ export const SinglePlayer: React.FC<{gid: string}> = (props) => {
             {gameState.loaded && gameState.started && (
               <>
                 {' '}
-                <FencingToolbar toolbarActions={toolbarActions} />
-                <Player
+                {/* <FencingToolbar toolbarActions={toolbarActions} /> */}
+                {/* <Player
                   // eslint-disable-next-line react/jsx-props-no-spreading
-                  {...transformGameToPlayerProps(
+                  {...transformGameToPlayerPropsSingle(
                     gameState.game!,
                     _.values(gameState.users),
                     playerActions,
-                    id,
-                    teamId
+                    id
                   )}
-                />
+                /> */}
+                <Game
+                  {...transformGameToPlayerPropsSingle(
+                    gameState.game!,
+                    _.values(gameState.users),
+                    playerActions,
+                    id
+                  )}
+                ></Game>
               </>
             )}
           </div>

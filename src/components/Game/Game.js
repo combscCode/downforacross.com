@@ -292,6 +292,7 @@ export default class Game extends Component {
 
   renderToolbar() {
     if (!this.game) return;
+    console.log(this.game);
     const {clock, solved} = this.game;
     const {mobile} = this.props;
     const {pencilMode, autocheckMode, vimMode, vimInsert, listMode} = this.state;
@@ -333,6 +334,8 @@ export default class Game extends Component {
 
   render() {
     const padding = this.props.mobile ? 0 : 20;
+    console.log(this);
+    console.log(this.game);
     return (
       <Flex column grow={1}>
         {this.renderToolbar()}

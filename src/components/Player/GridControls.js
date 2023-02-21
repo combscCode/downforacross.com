@@ -49,6 +49,7 @@ export default class GridControls extends Component {
       parallel
     );
 
+    console.log('Called selectNextClue');
     this.selectClue(direction, clueNumber);
   }
 
@@ -226,7 +227,7 @@ export default class GridControls extends Component {
       l: 'right',
       x: 'delete',
       '^': 'home',
-      '$': 'end',
+      $: 'end',
     };
 
     const {onVimNormal, onVimInsert, vimInsert, onPressEnter, onPressPeriod} = this.props;
