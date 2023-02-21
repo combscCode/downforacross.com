@@ -44,6 +44,10 @@ export default class Play extends Component {
     return !!querystring.parse(this.props.location.search.slice(1)).fencing;
   }
 
+  get is_single_player() {
+    return !!querystring.parse(this.props.location.search.slice(1)).singlePlayer;
+  }
+
   componentDidUpdate() {
     if (this.query.mode === 'battle') {
       return;
@@ -59,7 +63,19 @@ export default class Play extends Component {
     if (shouldAutojoin) {
       const {gid} = games[0];
       const {v2} = games[0];
-      const href = v2 ? (this.is_fencing ? `/fencing/${gid}` : `/beta/game/${gid}`) : `/game/${gid}`;
+      if (this.is_fencing && this.is_single_player) {
+        throw new Error('should not be both fencing and single player');
+      }
+      var href;
+      if (!v2) {
+        href = `/game/${gid}`;
+      } else if (this.is_fencing) {
+        href = `/fencing/${gid}`;
+      } else if (this.is_single_player) {
+        href = `/singleplayer/{$gid}`;
+      } else {
+        href = `/beta/game/${gid}`;
+      }
 
       if (games.length > 1) {
         setTimeout(() => {

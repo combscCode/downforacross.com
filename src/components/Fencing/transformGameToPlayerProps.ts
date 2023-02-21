@@ -90,3 +90,40 @@ export const transformGameToPlayerProps = (
     optimisticCounter: null,
   };
 };
+
+export const transformGameToPlayerPropsSingle = (
+  game: GameJson,
+  users: UserJson[],
+  playerActions: PlayerActions,
+  id: string
+): PlayerProps => {
+  const clues = game.clues;
+  const cursors = _.compact(users.map((user) => user.cursor));
+  return {
+    ...playerActions,
+    beta: true,
+    size: 35,
+    grid: game.grid,
+    solution: game.solution,
+    circles: game.circles,
+    shades: game.shades,
+    clues,
+    id,
+    cursors,
+    currentCursor: cursors.find((cursor) => cursor.id === id),
+    pings: [],
+    users,
+    frozen: null,
+    myColor: null,
+    addPing: null,
+    onPressEnter: null,
+    onPressPeriod: null,
+    vimMode: null,
+    vimInsert: null,
+    onVimInsert: null,
+    onVimNormal: null,
+    mobile: null,
+    pickups: null,
+    optimisticCounter: null,
+  };
+};

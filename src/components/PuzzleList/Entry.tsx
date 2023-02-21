@@ -18,6 +18,7 @@ export interface EntryProps {
     solves?: Array<any>;
   };
   fencing?: boolean;
+  singlePlayer?: boolean;
 }
 
 export default class Entry extends Component<EntryProps> {
@@ -44,13 +45,13 @@ export default class Entry extends Component<EntryProps> {
   }
 
   render() {
-    const {title, author, pid, status, stats, fencing} = this.props;
+    const {title, author, pid, status, stats, fencing, singlePlayer} = this.props;
     const numSolvesOld = _.size(stats?.solves || []);
     const numSolves = numSolvesOld + (stats?.numSolves || 0);
     const displayName = _.compact([author.trim(), this.size]).join(' | ');
     return (
       <Link
-        to={`/beta/play/${pid}${fencing ? '?fencing=1' : ''}`}
+        to={`/beta/play/${pid}${fencing ? '?fencing=1' : ''}${singlePlayer ? '?singlePlayer=1' : ''}`}
         style={{textDecoration: 'none', color: 'initial'}}
       >
         <Flex className="entry" column onClick={this.handleClick} onMouseLeave={this.handleMouseLeave}>
