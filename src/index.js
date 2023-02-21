@@ -19,6 +19,7 @@ import {
   Stats,
   Room,
   Fencing,
+  SinglePlayer,
 } from './pages';
 import GlobalContext from './lib/GlobalContext';
 
@@ -84,6 +85,8 @@ const Root = () => {
             <Route exact path="/composition/:cid" component={Composition} />
             <Route exact path="/fencing/:gid" component={Fencing} />
             <Route exact path="/beta/fencing/:gid" component={Fencing} />
+            <Route exact path="/singleplayer/:gid" component={SinglePlayer} />
+            <Route exact path="/beta/singleplayer/:gid" component={SinglePlayer} />
             <Route
               exact
               path="/discord"

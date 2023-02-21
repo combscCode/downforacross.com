@@ -10,5 +10,20 @@ import Composition from './Composition';
 import Stats from './Stats';
 import Room from './Room';
 import Fencing from './Fencing';
+import SinglePlayer from './SinglePlayer';
 
-export {Welcome, Compose, Account, Replays, Game, Play, Replay, Composition, Battle, Stats, Room, Fencing};
+export {
+  Welcome,
+  Compose,
+  Account,
+  Replays,
+  Game,
+  Play,
+  Replay,
+  Composition,
+  Battle,
+  Stats,
+  Room,
+  Fencing,
+  SinglePlayer,
+};
