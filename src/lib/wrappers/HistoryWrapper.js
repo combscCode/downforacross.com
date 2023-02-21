@@ -4,11 +4,12 @@ import {reduce as gameReducer} from '../reducers/game';
 const MEMO_RATE = 10;
 
 export default class HistoryWrapper {
-  constructor(history = [], reducer = gameReducer) {
+  constructor(history = [], reducer = gameReducer, online = true) {
     window.historyWrapper = this;
     this.reducer = reducer;
     this.history = [];
     this.optimisticEvents = [];
+    this.online = online;
     this.memo = [];
     this.createEvent = null;
     history.forEach((event) => {
@@ -119,15 +120,17 @@ export default class HistoryWrapper {
       ...event,
       timestamp: (_.last(this.history)?.timestamp ?? 0) + this.optimisticEvents.length + 1000,
     };
-    setTimeout(() => {
-      if (this.optimisticEvents.includes(event)) {
-        console.log('Detected websocket drop, reconnecting...');
-        this.optimisticEvents = [];
-        alert('disconnected, please refresh');
-        window.socket.close();
-        window.socket.open();
-      }
-    }, 5000);
+    if (this.online) {
+      setTimeout(() => {
+        if (this.optimisticEvents.includes(event)) {
+          console.log('Detected websocket drop, reconnecting...');
+          this.optimisticEvents = [];
+          alert('disconnected, please refresh');
+          window.socket.close();
+          window.socket.open();
+        }
+      }, 5000);
+    }
     this.optimisticEvents.push(event);
   }
 
