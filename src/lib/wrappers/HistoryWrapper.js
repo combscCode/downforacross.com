@@ -112,7 +112,8 @@ export default class HistoryWrapper {
         this.memoize(index);
       }
     });
-    // sidestep issue
+    // Sidestep issue where clock is not defined. I don't know enough about this code to figure
+    // out what the appropriate fix is, just doing this so I can work on my features wout being blocked.
     if (!!this.getSnapshotAtIndex(insertPoint).clock) {
       event.gameTimestamp = this.getSnapshotAtIndex(insertPoint).clock.trueTotalTime;
     }
