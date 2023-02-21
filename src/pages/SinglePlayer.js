@@ -96,7 +96,7 @@ export default class Game extends Component {
 
   initializeGame() {
     if (this.gameModel) this.gameModel.detach();
-    this.gameModel = new GameModel(`/game/${this.state.gid}`);
+    this.gameModel = new GameModel(`/game/${this.state.gid}`, false);
     this.historyWrapper = new HistoryWrapper([], gameReducer, false);
     this.gameModel.once('battleData', (battleData) => {
       this.initializeBattle(battleData);
@@ -137,7 +137,7 @@ export default class Game extends Component {
 
     if (this.opponentGameModel) this.opponentGameModel.detach();
 
-    this.opponentGameModel = new GameModel(`/game/${this.state.opponent}`);
+    this.opponentGameModel = new GameModel(`/game/${this.state.opponent}`, false);
     this.opponentHistoryWrapper = new HistoryWrapper([], this.gameReducer, false);
     this.opponentGameModel.on('createEvent', (event) => {
       this.opponentHistoryWrapper.setCreateEvent(event);
@@ -266,6 +266,12 @@ export default class Game extends Component {
       return;
     }
 
+    const k = String(this.game.pid) + String(this.state.gid);
+    console.log(k);
+    if (localStorage.getItem(k) !== null) {
+      console.log('Detected a local solve for this game, setting game as solved.');
+      this.game.solved = true;
+    }
     if (isEdit) {
       await this.user.joinGame(this.state.gid, {
         pid: this.game.pid,
@@ -284,11 +290,12 @@ export default class Game extends Component {
       }
       // double log to postgres
       try {
+        console.log('attempting double log');
         await recordSolve(this.game.pid, this.state.gid, this.game.clock.totalTime);
       } catch (e) {
         console.warn('Seem to have solved a puzzle while offline');
         console.warn(e);
-        const k = String(this.game.pid) + String(this.game.gid);
+        const k = String(this.game.pid) + String(this.state.gid);
         console.log(k);
         localStorage.setItem(k, this.game.clock.totalTime);
       }

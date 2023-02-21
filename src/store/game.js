@@ -31,14 +31,19 @@ const castNullsToUndefined = (obj) => {
 
 const CURRENT_VERSION = 1.0;
 export default class Game extends EventEmitter {
-  constructor(path) {
+  constructor(path, online = true) {
     super();
     window.game = this;
     this.path = path;
+    this.online = online;
     this.ref = db.ref(path);
     this.eventsRef = this.ref.child('events');
     this.createEvent = null;
     this.checkArchive();
+    this.localdb = undefined;
+    if (!online) {
+      this.openLocalDatabase();
+    }
   }
 
   get gid() {
@@ -100,8 +105,13 @@ export default class Game extends EventEmitter {
 
   pushEventToWebsocket(event) {
     if (!this.socket || !this.socket.connected) {
+      // You are disconnected.
       this.socket && this.socket.close().open(); // HACK try to fix the disconnection bug
-      // throw new Error('Not connected to websocket');
+      if (this.online) {
+        throw new Error('Not connected to websocket');
+      } else {
+        // Offline mode, save the event locally.
+      }
     }
 
     return emitAsync(this.socket, 'game_event', {
@@ -124,6 +134,23 @@ export default class Game extends EventEmitter {
       event = castNullsToUndefined(event);
       this.emitWSEvent(event);
     });
+  }
+
+  openLocalDatabase() {
+    // This is used in singleplayer mode to store events locally when disconnected
+    // from the internet.
+    const request = indexedDB.open('dfac');
+    request.onerror = (event) => {
+      throw new Error('Error when opening local DB, ' + request.errorCode);
+    };
+    request.onsuccess = (event) => {
+      this.localdb = event.target.result;
+      this.localdb.onerror = (event) => {
+        // Generic error handler for all errors targeted at this database's
+        // requests!
+        console.error(`Database error: ${event.target.errorCode}`);
+      };
+    };
   }
 
   // Firebase Code
