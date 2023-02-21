@@ -283,7 +283,15 @@ export default class Game extends Component {
         });
       }
       // double log to postgres
-      await recordSolve(this.game.pid, this.state.gid, this.game.clock.totalTime);
+      try {
+        await recordSolve(this.game.pid, this.state.gid, this.game.clock.totalTime);
+      } catch (e) {
+        console.warn('Seem to have solved a puzzle while offline');
+        console.warn(e);
+        const k = String(this.game.pid) + String(this.game.gid);
+        console.log(k);
+        localStorage.setItem(k, this.game.clock.totalTime);
+      }
       this.user.markSolved(this.state.gid);
       if (this.battleModel) {
         this.battleModel.setSolved(this.state.team);
