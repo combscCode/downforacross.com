@@ -9,6 +9,7 @@ import Nav from '../components/common/Nav';
 
 import {GameModel, getUser, BattleModel} from '../store';
 import HistoryWrapper from '../lib/wrappers/HistoryWrapper';
+import {reduce as gameReducer} from '../lib/reducers/game';
 import GameComponent from '../components/Game';
 import MobilePanel from '../components/common/MobilePanel';
 import Chat from '../components/Chat';
@@ -96,7 +97,7 @@ export default class Game extends Component {
   initializeGame() {
     if (this.gameModel) this.gameModel.detach();
     this.gameModel = new GameModel(`/game/${this.state.gid}`);
-    this.historyWrapper = new HistoryWrapper();
+    this.historyWrapper = new HistoryWrapper([], gameReducer, false);
     this.gameModel.once('battleData', (battleData) => {
       this.initializeBattle(battleData);
     });
@@ -137,7 +138,7 @@ export default class Game extends Component {
     if (this.opponentGameModel) this.opponentGameModel.detach();
 
     this.opponentGameModel = new GameModel(`/game/${this.state.opponent}`);
-    this.opponentHistoryWrapper = new HistoryWrapper();
+    this.opponentHistoryWrapper = new HistoryWrapper([], this.gameReducer, false);
     this.opponentGameModel.on('createEvent', (event) => {
       this.opponentHistoryWrapper.setCreateEvent(event);
       this.handleUpdate();
@@ -336,40 +337,6 @@ export default class Game extends Component {
     );
   }
 
-  renderChat() {
-    if (!this.gameModel || !this.historyWrapper.ready) {
-      return;
-    }
-
-    const {id} = this.user;
-    const color = this.userColor;
-    const {mobile} = this.state;
-    return (
-      <Chat
-        ref={(c) => {
-          this.chat = c;
-        }}
-        info={this.game.info}
-        path={this.gameModel.path}
-        data={this.game.chat}
-        game={this.game}
-        gid={this.state.gid}
-        users={this.game.users}
-        id={id}
-        myColor={color}
-        onChat={this.handleChat}
-        onUpdateDisplayName={this.handleUpdateDisplayName}
-        onUpdateColor={this.handleUpdateColor}
-        onUnfocus={this.handleUnfocusChat}
-        onToggleChat={this.handleToggleChat}
-        mobile={mobile}
-        opponentData={this.opponentGame && this.opponentGame.chat}
-        bid={this.state.bid}
-        updateSeenChatMessage={this.updateSeenChatMessage}
-      />
-    );
-  }
-
   getPuzzleTitle() {
     if (!this.gameModel || !this.historyWrapper.ready) {
       return;
@@ -386,7 +353,6 @@ export default class Game extends Component {
       <>
         <MobilePanel />
         {this.showingGame && this.renderGame()}
-        {this.showingChat && this.renderChat()}
       </>
     );
 
@@ -394,10 +360,7 @@ export default class Game extends Component {
       <>
         <Nav v2 />
         <Flex grow={1} style={{overflow: 'auto'}}>
-          <Flex column shrink={0}>
-            {this.showingGame && this.renderGame()}
-          </Flex>
-          <Flex grow={1}>{this.showingChat && this.renderChat()}</Flex>
+          {this.showingGame && this.renderGame()}
         </Flex>
         {powerups && <Powerups powerups={powerups} handleUsePowerup={this.handleUsePowerup} />}
       </>

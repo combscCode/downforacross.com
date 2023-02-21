@@ -101,7 +101,7 @@ export default class Game extends EventEmitter {
   pushEventToWebsocket(event) {
     if (!this.socket || !this.socket.connected) {
       this.socket && this.socket.close().open(); // HACK try to fix the disconnection bug
-      throw new Error('Not connected to websocket');
+      // throw new Error('Not connected to websocket');
     }
 
     return emitAsync(this.socket, 'game_event', {
