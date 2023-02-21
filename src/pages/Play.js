@@ -72,7 +72,7 @@ export default class Play extends Component {
       } else if (this.is_fencing) {
         href = `/fencing/${gid}`;
       } else if (this.is_single_player) {
-        href = `/singleplayer/{$gid}`;
+        href = `/singleplayer/${gid}`;
       } else {
         href = `/beta/game/${gid}`;
       }

@@ -169,12 +169,6 @@ export const SinglePlayer: React.FC<{gid: string}> = (props) => {
           <Helmet title={`Single Player ${gid}`} />
           <div style={{flex: 1}}>
             {!gameState.loaded && <div>Loading your game...</div>}
-            {/* {!gameState.started && gameState.loaded && (
-              <div>
-                <button onClick={playerActions.startGame}>Start Game</button>
-              </div>
-            )} */}
-            {/* <FencingCountdown playerActions={playerActions} gameState={gameState} gameEventsHook={eventsHook}> */}
             {gameState.loaded && gameState.started && (
               <>
                 {' '}
@@ -191,7 +185,6 @@ export const SinglePlayer: React.FC<{gid: string}> = (props) => {
                 />
               </>
             )}
-            {/* </FencingCountdown> */}
           </div>
         </div>
       </Flex>
