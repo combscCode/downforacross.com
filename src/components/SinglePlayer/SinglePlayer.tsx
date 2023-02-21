@@ -217,46 +217,41 @@ export const SinglePlayer: React.FC<{gid: string}> = (props) => {
       },
     });
   };
-  const fencingScoreboard = (
-    <FencingScoreboard
-      gameState={gameState}
-      currentUserId={id}
-      changeName={changeName}
-      changeTeamName={changeTeamName}
-      joinTeam={joinTeam}
-      spectate={spectate}
-    />
-  );
   return (
     <Flex column style={{flex: 1}}>
       <Nav hidden={false} v2 canLogin={false} divRef={null} linkStyle={null} mobile={null} />
       <Flex style={{flex: 1, overflow: 'auto'}}>
         <div className={classes.container}>
-          <Helmet title={`Fencing ${gid}`} />
+          <Helmet title={`Single Player ${gid}`} />
           <div style={{flex: 1}}>
-            <FencingCountdown playerActions={playerActions} gameState={gameState} gameEventsHook={eventsHook}>
-              {gameState.loaded && gameState.started && (
-                <>
-                  {' '}
-                  <FencingToolbar toolbarActions={toolbarActions} />
-                  <Player
-                    // eslint-disable-next-line react/jsx-props-no-spreading
-                    {...transformGameToPlayerProps(
-                      gameState.game!,
-                      _.values(gameState.users),
-                      playerActions,
-                      id,
-                      teamId
-                    )}
-                  />
-                </>
-              )}
-            </FencingCountdown>
+            {!gameState.started && gameState.loaded && (
+              <div>
+                <button onClick={playerActions.startGame}>Start Game</button>
+              </div>
+            )}
+            {/* <FencingCountdown playerActions={playerActions} gameState={gameState} gameEventsHook={eventsHook}> */}
+            {gameState.loaded && gameState.started && (
+              <>
+                {' '}
+                <FencingToolbar toolbarActions={toolbarActions} />
+                <Player
+                  // eslint-disable-next-line react/jsx-props-no-spreading
+                  {...transformGameToPlayerProps(
+                    gameState.game!,
+                    _.values(gameState.users),
+                    playerActions,
+                    id,
+                    teamId
+                  )}
+                />
+              </>
+            )}
+            {/* </FencingCountdown> */}
           </div>
         </div>
         <Flex column style={{flexBasis: 500}}>
           {!gameState.loaded && <div>Loading your game...</div>}
-          {gameState.game && (
+          {/* {gameState.game && (
             <Chat
               isFencing
               subheader={<div className={classes.scoreboardContainer}>{fencingScoreboard}</div>}
@@ -274,7 +269,7 @@ export const SinglePlayer: React.FC<{gid: string}> = (props) => {
               updateSeenChatMessage={null}
               onUpdateDisplayName={(_id: string, name: string) => changeName(name)}
             />
-          )}
+          )} */}
         </Flex>
       </Flex>
     </Flex>

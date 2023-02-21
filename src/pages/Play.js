@@ -112,7 +112,13 @@ export default class Play extends Component {
         solved: false,
         v2: true,
       });
-      redirect(this.is_fencing ? `/fencing/${gid}` : `/beta/game/${gid}`);
+      redirect(
+        this.is_single_player
+          ? `/singleplayer/${gid}`
+          : this.is_fencing
+          ? `/fencing/${gid}`
+          : `/beta/game/${gid}`
+      );
     });
   }
 
