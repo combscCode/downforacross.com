@@ -17,10 +17,11 @@ export const WelcomeVariantsControl: React.FC<{
       content: (
         <div className="swal-text swal-text--no-margin">
           <p>
-            Fencing is a variant of Down for a Cross where you solve a crossword alone.
+            Single Player is a variant of Down for a Cross where you solve a crossword alone.
             <br />
             <br />
-            This mode is recommended for spotty internet connections, like if you're on the subway.
+            This mode allows you to keep making progress on your crossword even when your network is a bit
+            spotty.
             <br />
             <br />
             <span style={{fontSize: '75%', color: 'gray'}}>
