@@ -8,7 +8,11 @@ import {makeStyles} from '@material-ui/core';
 import {useSocket} from '../../sockets/useSocket';
 import {emitAsync} from '../../sockets/emitAsync';
 import Player from '../Player';
-import {transformGameToPlayerPropsSingle} from '../Fencing/transformGameToPlayerProps';
+import {
+  transformGameToPlayerPropsSingle,
+  transformGameToPlayerProps,
+} from '../Fencing/transformGameToPlayerProps';
+import {FencingScoreboard} from '../Fencing/FencingScoreboard';
 import {usePlayerActions} from '../Fencing/usePlayerActions';
 import {useToolbarActions} from '../Fencing/useToolbarActions';
 import {GameEvent} from '../../shared/fencingGameEvents/types/GameEvent';
@@ -73,8 +77,10 @@ const useStyles = makeStyles({
     },
   },
 });
-
-// The component that handles singleplayer mode
+/**
+ * This component is parallel to Game -- will render a <Player/>
+ * Will implement custom competitive crossword logic (see PR #145)
+ */
 export const SinglePlayer: React.FC<{gid: string}> = (props) => {
   const {gid} = props;
   const socket = useSocket();
@@ -106,12 +112,12 @@ export const SinglePlayer: React.FC<{gid: string}> = (props) => {
   const gameState = eventsHook.gameState;
 
   const id = getUser().id;
+  const teamId = gameState.users[id]?.teamId;
 
   useUpdateEffect(() => {
     if (isInitialized) {
-      console.log('initializing for the first time', id);
+      console.log('initializing for the first time', id, teamId);
       if (!gameState) {
-        throw new Error("gameState is falsey in useUpdateEffect, this shouldn't happen");
         return; // shouldn't happen
       }
       if (!gameState.users[id]?.displayName) {
@@ -120,6 +126,26 @@ export const SinglePlayer: React.FC<{gid: string}> = (props) => {
           params: {
             id,
             displayName: nameGenerator(),
+          },
+        });
+      }
+      if (!teamId) {
+        const nTeamId = _.minBy(
+          TEAM_IDS,
+          (t) => _.filter(_.values(gameState.users), (user) => user.teamId === t).length
+        )!;
+        sendEvent({
+          type: 'updateTeamId',
+          params: {
+            id,
+            teamId: nTeamId,
+          },
+        });
+        sendEvent({
+          type: 'updateCursor',
+          params: {
+            id,
+            cell: getStartingCursorPosition(gameState.game!, nTeamId),
           },
         });
       }
@@ -144,17 +170,69 @@ export const SinglePlayer: React.FC<{gid: string}> = (props) => {
       },
     });
   };
-  return (
-    <Flex>
-      <div>Hello World</div>
-    </Flex>
+  const changeTeamName = (newName: string): void => {
+    if (!teamId) return;
+    if (newName.trim().length === 0) {
+      newName = nameGenerator();
+    }
+    sendEvent({
+      type: 'updateTeamName',
+      params: {
+        teamId,
+        teamName: newName,
+      },
+    });
+  };
+  const joinTeam = (teamId: number) => {
+    sendEvent({
+      type: 'updateTeamId',
+      params: {
+        id,
+        teamId,
+      },
+    });
+  };
+  const spectate = () => {
+    sendEvent({
+      type: 'updateTeamId',
+      params: {
+        id,
+        teamId: teamId ? 0 : 1,
+      },
+    });
+  };
+  const handleChat = (username: string, id: string, message: string) => {
+    sendEvent({
+      type: 'sendChatMessage',
+      params: {
+        id,
+        message,
+      },
+    });
+    sendEvent({
+      type: 'chat' as any,
+      params: {
+        id,
+        text: message,
+      },
+    });
+  };
+  const fencingScoreboard = (
+    <FencingScoreboard
+      gameState={gameState}
+      currentUserId={id}
+      changeName={changeName}
+      changeTeamName={changeTeamName}
+      joinTeam={joinTeam}
+      spectate={spectate}
+    />
   );
   return (
     <Flex column style={{flex: 1}}>
       <Nav hidden={false} v2 canLogin={false} divRef={null} linkStyle={null} mobile={null} />
       <Flex style={{flex: 1, overflow: 'auto'}}>
         <div className={classes.container}>
-          <Helmet title={`Single Player ${gid}`} />
+          <Helmet title={`Fencing ${gid}`} />
           <div style={{flex: 1}}>
             <FencingCountdown playerActions={playerActions} gameState={gameState} gameEventsHook={eventsHook}>
               {gameState.loaded && gameState.started && (
@@ -163,11 +241,12 @@ export const SinglePlayer: React.FC<{gid: string}> = (props) => {
                   <FencingToolbar toolbarActions={toolbarActions} />
                   <Player
                     // eslint-disable-next-line react/jsx-props-no-spreading
-                    {...transformGameToPlayerPropsSingle(
+                    {...transformGameToPlayerProps(
                       gameState.game!,
                       _.values(gameState.users),
                       playerActions,
-                      id
+                      id,
+                      teamId
                     )}
                   />
                 </>
@@ -175,6 +254,28 @@ export const SinglePlayer: React.FC<{gid: string}> = (props) => {
             </FencingCountdown>
           </div>
         </div>
+        <Flex column style={{flexBasis: 500}}>
+          {!gameState.loaded && <div>Loading your game...</div>}
+          {gameState.game && (
+            <Chat
+              isFencing
+              subheader={<div className={classes.scoreboardContainer}>{fencingScoreboard}</div>}
+              info={gameState.game.info}
+              teams={gameState.teams}
+              path={`/singleplayer/${gid}`}
+              data={gameState.chat}
+              game={gameState.game}
+              gid={gid}
+              users={gameState.users}
+              id={id}
+              myColor={null}
+              onChat={handleChat}
+              mobile={false}
+              updateSeenChatMessage={null}
+              onUpdateDisplayName={(_id: string, name: string) => changeName(name)}
+            />
+          )}
+        </Flex>
       </Flex>
     </Flex>
   );
