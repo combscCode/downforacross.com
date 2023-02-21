@@ -12,7 +12,7 @@ export const WelcomeVariantsControl: React.FC<{
   const classes = useStyles();
   const showSinglePlayerInfo = () => {
     swal({
-      title: 'downforacross.com/single-player',
+      title: 'downforacross.com/singleplayer',
       icon: 'info',
       content: (
         <div className="swal-text swal-text--no-margin">
@@ -88,7 +88,7 @@ export const WelcomeVariantsControl: React.FC<{
         </span>
       </span>
       <span>
-        <Link to="/single-player">
+        <Link to="/singleplayer">
           <span
             className={clsx(classes.option, {
               selected: !!props.singlePlayer,

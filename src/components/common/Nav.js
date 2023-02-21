@@ -90,11 +90,11 @@ export default function Nav({hidden, v2, canLogin, mobile, linkStyle, divRef}) {
   if (hidden) return null; // no nav for mobile
   const user = getUser();
   const fencing = window.location.href.includes('fencing');
-  const singlePlayer = window.location.href.includes('single-player');
+  const singlePlayer = window.location.href.includes('singleplayer');
   return (
     <div className={classnames('nav', {mobile})} ref={divRef}>
       <div className="nav--left" style={linkStyle}>
-        <Link to={singlePlayer ? '/single-player' : fencing ? '/fencing' : '/'}>Down for a Cross</Link>
+        <Link to={singlePlayer ? '/singleplayer' : fencing ? '/fencing' : '/'}>Down for a Cross</Link>
       </div>
       <div className="nav--right">
         <div className="molester-moon" onClick={toggleMolesterMoons}>

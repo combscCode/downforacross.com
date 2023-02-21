@@ -157,66 +157,10 @@ export const SinglePlayer: React.FC<{gid: string}> = (props) => {
 
   const toolbarActions = useToolbarActions(sendEvent, gameState, id);
   const playerActions = usePlayerActions(sendEvent, id);
+  if (gameState.loaded && !gameState.started) {
+    playerActions.startGame();
+  }
 
-  const changeName = (newName: string): void => {
-    if (newName.trim().length === 0) {
-      newName = nameGenerator();
-    }
-    sendEvent({
-      type: 'updateDisplayName',
-      params: {
-        id,
-        displayName: newName,
-      },
-    });
-  };
-  const changeTeamName = (newName: string): void => {
-    if (!teamId) return;
-    if (newName.trim().length === 0) {
-      newName = nameGenerator();
-    }
-    sendEvent({
-      type: 'updateTeamName',
-      params: {
-        teamId,
-        teamName: newName,
-      },
-    });
-  };
-  const joinTeam = (teamId: number) => {
-    sendEvent({
-      type: 'updateTeamId',
-      params: {
-        id,
-        teamId,
-      },
-    });
-  };
-  const spectate = () => {
-    sendEvent({
-      type: 'updateTeamId',
-      params: {
-        id,
-        teamId: teamId ? 0 : 1,
-      },
-    });
-  };
-  const handleChat = (username: string, id: string, message: string) => {
-    sendEvent({
-      type: 'sendChatMessage',
-      params: {
-        id,
-        message,
-      },
-    });
-    sendEvent({
-      type: 'chat' as any,
-      params: {
-        id,
-        text: message,
-      },
-    });
-  };
   return (
     <Flex column style={{flex: 1}}>
       <Nav hidden={false} v2 canLogin={false} divRef={null} linkStyle={null} mobile={null} />
@@ -224,11 +168,12 @@ export const SinglePlayer: React.FC<{gid: string}> = (props) => {
         <div className={classes.container}>
           <Helmet title={`Single Player ${gid}`} />
           <div style={{flex: 1}}>
-            {!gameState.started && gameState.loaded && (
+            {!gameState.loaded && <div>Loading your game...</div>}
+            {/* {!gameState.started && gameState.loaded && (
               <div>
                 <button onClick={playerActions.startGame}>Start Game</button>
               </div>
-            )}
+            )} */}
             {/* <FencingCountdown playerActions={playerActions} gameState={gameState} gameEventsHook={eventsHook}> */}
             {gameState.loaded && gameState.started && (
               <>
@@ -249,28 +194,6 @@ export const SinglePlayer: React.FC<{gid: string}> = (props) => {
             {/* </FencingCountdown> */}
           </div>
         </div>
-        <Flex column style={{flexBasis: 500}}>
-          {!gameState.loaded && <div>Loading your game...</div>}
-          {/* {gameState.game && (
-            <Chat
-              isFencing
-              subheader={<div className={classes.scoreboardContainer}>{fencingScoreboard}</div>}
-              info={gameState.game.info}
-              teams={gameState.teams}
-              path={`/singleplayer/${gid}`}
-              data={gameState.chat}
-              game={gameState.game}
-              gid={gid}
-              users={gameState.users}
-              id={id}
-              myColor={null}
-              onChat={handleChat}
-              mobile={false}
-              updateSeenChatMessage={null}
-              onUpdateDisplayName={(_id: string, name: string) => changeName(name)}
-            />
-          )} */}
-        </Flex>
       </Flex>
     </Flex>
   );

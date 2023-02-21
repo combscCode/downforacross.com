@@ -64,7 +64,7 @@ const Root = () => {
             <Route exact path="/fencing">
               <Welcome fencing />
             </Route>
-            <Route exact path="/single-player">
+            <Route exact path="/singleplayer">
               <Welcome singlePlayer />
             </Route>
             <Route exact path="/stats" component={Stats} />
